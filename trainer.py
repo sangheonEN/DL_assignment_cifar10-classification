@@ -49,10 +49,11 @@ def train(train_set, valid_set, args, device, summary):
     if args.lr_type == 'origin':
         pass
     elif args.lr_type == 'step':
-        lr_scheduler = utils.Step_lr(optimizer, initial_lr=args.initial_lr)
+        lr_scheduler = utils.step_lr(optimizer, step_size= 20, gamma= 0.2)
 
     elif args.lr_type == 'warmup':
         lr_scheduler = utils.WarmupConstantSchedule(optimizer, warmup_steps=args.warm_step, initial_lr=args.initial_lr)
+
     else:
         lr_scheduler = utils.lambda_lr(optimizer)
 
@@ -93,11 +94,13 @@ def train(train_set, valid_set, args, device, summary):
                 loss = loss_function(output, target)
                 val_loss += loss
 
-                val_total += target.size(0)
-                val_correct += output.eq(target.data).cpu().sum()
-                print(f'# TEST Acc: ({100. * val_correct / val_total :.2f}%) ({val_correct}/{val_total})')
+                _, prediction = torch.max(output.data, 1)
 
-                summary.add_scalar('Validation Acc', round(100. * val_correct / val_total, 2), batch_num)
+                val_total += target.size(0)
+                val_correct += prediction.eq(target.data).cpu().sum()
+                print(f'# Validation Acc: ({100. * val_correct / val_total :.2f}%) ({val_correct}/{val_total})')
+
+                # summary.add_scalar('Validation Acc', round(float(100. * val_correct / val_total), 2), batch_num)
 
 
         if epoch % 10 == 0:
@@ -163,7 +166,7 @@ def inference(test_set, args, device, summary):
             correct += prediction.eq(target.data).cpu().sum()
             print(f'# TEST Acc: ({100. * correct / total :.2f}%) ({correct}/{total})')
 
-            summary.add_scalar('Test Acc', round(100. * correct / total, 2), batch_num)
+            summary.add_scalar('Test Acc', round(float(100. * correct / total), 2), batch_num)
 
 
             log = [batch_num, prediction, target]
