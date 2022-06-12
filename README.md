@@ -1,6 +1,7 @@
 # DL_assignment_cifar10-classification
 
 **1.	Introduction**
+
 일반적으로 이미지 분류는 심화학습 기초 수업에서 습득한 딥러닝 모델 구축 방법론을 기반으로 CIFAR-10 데이터를 활용한 세 가지 Convolution Neural Network(CNN) 이미지 분류 모델을 구현하고 Data Augmentation, 여러 Learning Rate Scheduling 방법론을 적용하여 비교 검증 한다.
 
 **2.	Proposal Method**
